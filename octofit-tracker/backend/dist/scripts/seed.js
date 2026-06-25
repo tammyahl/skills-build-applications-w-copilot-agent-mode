@@ -1,9 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
+const database_1 = require("../config/database");
 const User_1 = require("../models/User");
 const Team_1 = require("../models/Team");
 const Activity_1 = require("../models/Activity");
@@ -18,13 +15,12 @@ const Workout_1 = require("../models/Workout");
  * 3. Creates sample users, teams, activities, leaderboard entries, and workouts
  * 4. Closes the database connection
  */
-const MONGODB_URI = 'mongodb://localhost:27017/octofit_db';
 async function seedDatabase() {
     try {
         console.log('🌱 Starting database seed...');
-        console.log(`📦 Connecting to MongoDB at ${MONGODB_URI}`);
+        console.log(`📦 Connecting to MongoDB at ${(0, database_1.getMongoDBURI)()}`);
         // Connect to MongoDB
-        await mongoose_1.default.connect(MONGODB_URI);
+        await (0, database_1.connectDatabase)();
         console.log('✅ Connected to MongoDB');
         // Clear existing data
         console.log('🗑️  Clearing existing data...');
@@ -268,8 +264,7 @@ async function seedDatabase() {
         console.log(`   - Leaderboard Entries: ${leaderboardEntries.length}`);
         console.log(`   - Workouts: ${workouts.length}`);
         // Close connection
-        await mongoose_1.default.connection.close();
-        console.log('✅ Database connection closed');
+        await (0, database_1.disconnectDatabase)();
     }
     catch (error) {
         console.error('❌ Error seeding database:', error);

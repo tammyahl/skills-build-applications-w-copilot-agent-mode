@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import { connectDatabase, disconnectDatabase, getMongoDBURI } from '../config/database';
 import { User } from '../models/User';
 import { Team } from '../models/Team';
 import { Activity } from '../models/Activity';
@@ -15,15 +15,13 @@ import { Workout } from '../models/Workout';
  * 4. Closes the database connection
  */
 
-const MONGODB_URI = 'mongodb://localhost:27017/octofit_db';
-
 async function seedDatabase() {
   try {
     console.log('🌱 Starting database seed...');
-    console.log(`📦 Connecting to MongoDB at ${MONGODB_URI}`);
+    console.log(`📦 Connecting to MongoDB at ${getMongoDBURI()}`);
 
     // Connect to MongoDB
-    await mongoose.connect(MONGODB_URI);
+    await connectDatabase();
     console.log('✅ Connected to MongoDB');
 
     // Clear existing data
@@ -275,8 +273,7 @@ async function seedDatabase() {
     console.log(`   - Workouts: ${workouts.length}`);
 
     // Close connection
-    await mongoose.connection.close();
-    console.log('✅ Database connection closed');
+    await disconnectDatabase();
   } catch (error) {
     console.error('❌ Error seeding database:', error);
     process.exit(1);

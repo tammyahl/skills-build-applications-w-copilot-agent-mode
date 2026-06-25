@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
+const database_1 = require("./config/database");
 const users_1 = __importDefault(require("./routes/users"));
 const teams_1 = __importDefault(require("./routes/teams"));
 const activities_1 = __importDefault(require("./routes/activities"));
@@ -18,7 +18,6 @@ require("./models/Leaderboard");
 require("./models/Workout");
 const app = (0, express_1.default)();
 const PORT = 8000;
-const MONGODB_URI = 'mongodb://localhost:27017/octofit_db';
 // Determine API URL for Codespaces support
 const getApiUrl = () => {
     if (process.env.CODESPACE_NAME) {
@@ -30,12 +29,13 @@ const API_URL = getApiUrl();
 // Middleware
 app.use(express_1.default.json());
 // MongoDB Connection
-mongoose_1.default.connect(MONGODB_URI)
+(0, database_1.connectDatabase)()
     .then(() => {
-    console.log('Connected to MongoDB');
+    console.log('Database connected successfully');
 })
     .catch((error) => {
-    console.error('MongoDB connection error:', error);
+    console.error('Database connection failed:', error);
+    process.exit(1);
 });
 // Routes
 app.get('/', (req, res) => {
@@ -69,7 +69,7 @@ app.use((req, res) => {
 // Start server
 app.listen(PORT, () => {
     console.log(`OctoFit Tracker Backend running on ${API_URL}`);
-    console.log(`MongoDB connecting to ${MONGODB_URI}`);
+    console.log(`MongoDB connecting to ${(0, database_1.getMongoDBURI)()}`);
     console.log(`Health check available at ${API_URL}/health`);
     console.log('API routes:');
     console.log(`  - GET ${API_URL}/api/users`);
