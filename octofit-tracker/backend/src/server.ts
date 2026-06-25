@@ -5,10 +5,16 @@ import teamsRouter from './routes/teams';
 import activitiesRouter from './routes/activities';
 import leaderboardRouter from './routes/leaderboard';
 import workoutsRouter from './routes/workouts';
+// Import models to register schemas
+import './models/User';
+import './models/Team';
+import './models/Activity';
+import './models/Leaderboard';
+import './models/Workout';
 
 const app: Express = express();
 const PORT: number = 8000;
-const MONGODB_URI: string = 'mongodb://localhost:27017/octofit-tracker';
+const MONGODB_URI: string = 'mongodb://localhost:27017/octofit_db';
 
 // Determine API URL for Codespaces support
 const getApiUrl = (): string => {
